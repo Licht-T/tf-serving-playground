@@ -1,0 +1,36 @@
+version: '2.4'
+services:
+    tf_serving:
+        build: ./tf_serving
+        runtime: nvidia
+        ports:
+            - '8500:8500'
+            - '8501:8501'
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+        volumes:
+            - './models:/models'
+            - 'socket:/tf_servingd'
+        command:
+            - --grpc_socket_path=/tf_servingd/tf_servingd.sock
+            - --model_config_file=/models/models.config
+            - --model_config_file_poll_wait_seconds=60
+    tf_serving_test_client:
+        build: ./tf_serving_test_client
+        ports:
+            - '8081:8080'
+        volumes:
+            - './notebooks:/workspace/notebooks'
+            - 'socket:/tf_servingd'
+    model_generator:
+        build: ./model_generator
+        runtime: nvidia
+        ports:
+            - '8080:8080'
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+        volumes:
+            - './notebooks:/workspace/notebooks'
+            - './models:/workspace/models'
+volumes:
+    socket:
