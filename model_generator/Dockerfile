@@ -1,5 +1,7 @@
 FROM nvcr.io/nvidia/tensorrt:20.07-py3
 
+ENV TF_FORCE_GPU_ALLOW_GROWTH true
+
 RUN /opt/tensorrt/python/python_setup.sh
 
 RUN pip install \

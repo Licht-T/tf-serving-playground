@@ -17,6 +17,8 @@ services:
             - --model_config_file_poll_wait_seconds=60
     tf_serving_test_client:
         build: ./tf_serving_test_client
+        depends_on:
+            - tf_serving
         ports:
             - '8081:8080'
         volumes:
@@ -25,6 +27,8 @@ services:
     model_generator:
         build: ./model_generator
         runtime: nvidia
+        depends_on:
+            - yolov3_model_converter
         ports:
             - '8080:8080'
         environment:
@@ -32,5 +36,13 @@ services:
         volumes:
             - './notebooks:/workspace/notebooks'
             - './models:/workspace/models'
+    yolov3_model_converter:
+        build: ./yolov3_model_converter
+        runtime: nvidia
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+        volumes:
+            - './models:/workspace/models'
 volumes:
     socket:
+
