@@ -1,13 +1,10 @@
-FROM nvcr.io/nvidia/tensorrt:20.07-py3
+FROM nvcr.io/nvidia/tensorflow:20.12-tf2-py3
 
 ENV TF_FORCE_GPU_ALLOW_GROWTH true
 
-RUN /opt/tensorrt/python/python_setup.sh
-
 RUN pip install \
     jupyter \
-    onnxruntime-gpu \
-    tensorflow-gpu==2.4
+    onnxruntime-gpu
 
 RUN pip install \
     torch===1.7.1+cu110 \
